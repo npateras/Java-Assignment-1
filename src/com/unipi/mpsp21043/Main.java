@@ -1,6 +1,7 @@
 package com.unipi.mpsp21043;
 
 import java.util.Scanner;
+import java.util.UUID;
 
 public class Main {
 
@@ -33,6 +34,30 @@ public class Main {
 
         inputScan.close();
 
+
+        // DEBUG
         System.out.print(numOfPhones + " " + numOfClients);
+
+        Phone featurePhone1 =
+                PhoneFactory.getPhone(new FeaturePhoneFactory(3,5,"345678"));
+        Phone smartPhone1 =
+                PhoneFactory.getPhone(new SmartPhoneFactory(6,50,"3456","Android"));
+
+        System.out.println(featurePhone1);
+        System.out.println(smartPhone1);
+
+        Client[] arrayClients;
+
+        arrayClients = new Client[numOfClients];
+
+        for (int i = 0; i < numOfClients; i++) {
+            arrayClients[0] = new Client(
+                    UUID.randomUUID().toString(),
+                    Constants.phoneChoicesList_randomElement());
+        }
+
+        for (Client element: arrayClients) {
+            System.out.println(element);
+        }
     }
 }
