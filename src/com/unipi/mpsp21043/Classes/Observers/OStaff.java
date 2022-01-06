@@ -6,20 +6,35 @@ import java.util.List;
 public class OStaff {
     private String phoneType;
 
-    private List<INotifyFeaturePhone> interestedClients = new ArrayList<INotifyFeaturePhone>();
+    private List<INotifySmartPhone> interestedSmartPhoneClients = new ArrayList<INotifySmartPhone>();
+    private List<INotifyFeaturePhone> interestedFeaturePhoneClients = new ArrayList<INotifyFeaturePhone>();
 
-    public void addObserver(INotifyFeaturePhone iNotifyClient) {
-        this.interestedClients.add(iNotifyClient);
+    public void addSmartPhoneObserver(INotifySmartPhone iNotifyClient) {
+        this.interestedSmartPhoneClients.add(iNotifyClient);
     }
 
-    public void removeObserver(INotifyFeaturePhone iNotifyClient) {
-        this.interestedClients.remove(iNotifyClient);
+    public void addFeaturePhoneObserver(INotifyFeaturePhone iNotifyClient) {
+        this.interestedFeaturePhoneClients.add(iNotifyClient);
     }
 
-    public void notifyUpdate(String phoneType) {
-        this.phoneType = phoneType;
-        for (INotifyFeaturePhone iNotifyClient: this.interestedClients) {
-            iNotifyClient.sendMessage("A new " + phoneType + " was produced and it's available!");
+
+    public void removeSmartPhoneObserver(INotifySmartPhone iNotifyClient) {
+        this.interestedSmartPhoneClients.remove(iNotifyClient);
+    }
+
+    public void removeFeaturePhoneObserver(INotifyFeaturePhone iNotifyClient) {
+        this.interestedFeaturePhoneClients.remove(iNotifyClient);
+    }
+
+    public void notifySmartPhoneUpdate() {
+        for (INotifySmartPhone iNotifyClient: this.interestedSmartPhoneClients) {
+            iNotifyClient.sendMessage("A new Smartphone was produced and it's available!");
+        }
+    }
+
+    public void notifyFeaturePhoneUpdate() {
+        for (INotifyFeaturePhone iNotifyClient: this.interestedFeaturePhoneClients) {
+            iNotifyClient.sendMessage("A new Featurephone was produced and it's available!");
         }
     }
 

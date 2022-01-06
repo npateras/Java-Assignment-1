@@ -1,23 +1,14 @@
 package com.unipi.mpsp21043;
 
-import com.unipi.mpsp21043.Classes.Factories.FeaturePhoneFactory;
 import com.unipi.mpsp21043.Classes.Factories.Phone;
-import com.unipi.mpsp21043.Classes.Factories.PhoneFactory;
-import com.unipi.mpsp21043.Classes.Factories.SmartPhoneFactory;
-import com.unipi.mpsp21043.Classes.Observers.OClient;
+import com.unipi.mpsp21043.Classes.Observers.OClientFeaturePhone;
+import com.unipi.mpsp21043.Classes.Observers.OClientSmartPhone;
 import com.unipi.mpsp21043.Classes.Observers.OStaff;
 import com.unipi.mpsp21043.Classes.Observers.Client;
 import com.unipi.mpsp21043.Classes.Singletons.Shop;
 import com.unipi.mpsp21043.Utils.Constants;
-import static org.junit.Assert.*;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.util.Random;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 public class Main {
 
@@ -29,8 +20,7 @@ public class Main {
         Scanner inputScan = new Scanner(System.in);
         int numOfPhones = inputScan.nextInt();
         // If the num input is below 1, prompt for another value
-        while((numOfPhones < 1))
-        {
+        while ((numOfPhones < 1)) {
             System.out.print("Invalid value! Enter the amount of phones that need to given to clients (valid values are from 1 and above): ");
 
             numOfPhones = inputScan.nextInt();
@@ -42,8 +32,7 @@ public class Main {
         int numOfClients = inputScan.nextInt();
 
         // If the num input is below 1, prompt for another value
-        while((numOfClients < 1))
-        {
+        while ((numOfClients < 1)) {
             System.out.print("Invalid value! Enter the number of clients (valid values are from 1 and above): ");
 
             numOfClients = inputScan.nextInt();
@@ -52,9 +41,9 @@ public class Main {
         inputScan.close();
 
 
-        Client[] arrayClients;
+        Client[] clientList;
 
-        arrayClients = new Client[numOfClients];
+        clientList = new Client[numOfClients];
 
         // OBSERVANT
         OStaff observableStaff = new OStaff();
@@ -63,22 +52,59 @@ public class Main {
         for (int i = 0; i < numOfClients; i++) {
             String phoneChoice = Constants.phoneChoicesListRandomElement();
 
-            OClient observerClient = new OClient();
+            OClientFeaturePhone observerFeaturePhoneClient = new OClientFeaturePhone();
+            OClientSmartPhone observerSmartPhoneClient = new OClientSmartPhone();
 
-            observableStaff.addObserver(observerClient);
+            if (Objects.equals(phoneChoice, Constants.SMART_PHONE))
+                observableStaff.addSmartPhoneObserver(observerSmartPhoneClient);
+            else
+                observableStaff.addFeaturePhoneObserver(observerFeaturePhoneClient);
 
-            arrayClients[i] = new Client(
+            clientList[i] = new Client(
                     UUID.randomUUID().toString(),
-                    phoneChoice);
+                    phoneChoice,
+                    false);
         }
 
         Shop shopInstance = Shop.getInstance();
 
-        Random rand = new Random();
-        for (int i = 0; i < numOfClients; i++) {
+        List<Phone> arrayCreatedPhones = new ArrayList<Phone>();
+        boolean isFeaturePhones = false;
+        boolean isSmartPhones = false;
+
+        for (int i = 0; i < numOfPhones; i++) {
             String phoneToBeCreated = Constants.phoneChoicesListRandomElement();
-            Phone phone = shopInstance.createRandomPhoneSpecifications(phoneToBeCreated);
-            observableStaff.notifyUpdate(phoneToBeCreated);
+            arrayCreatedPhones.add(shopInstance.createRandomPhoneSpecifications(phoneToBeCreated));
+
+            if (Objects.equals(phoneToBeCreated, Constants.SMART_PHONE))
+                isSmartPhones = true;
+            else
+                isFeaturePhones = true;
+        }
+
+        if (isSmartPhones)
+            observableStaff.notifySmartPhoneUpdate();
+        if (isFeaturePhones)
+            observableStaff.notifyFeaturePhoneUpdate();
+
+        System.out.println("");
+        for (int i=0; i < arrayCreatedPhones.size(); i++) {
+            if (Objects.equals(clientList[i].getPhoneChoice(), Constants.SMART_PHONE)) {
+                if (arrayCreatedPhones.get(i).getPhoneType().equals(Constants.SMART_PHONE)) {
+                    clientList[i].setReceivedPhone(true);
+                    arrayCreatedPhones.remove(i);
+
+                    System.out.println("Client is taking a picture...");
+                }
+            }
+            else {
+                if (arrayCreatedPhones.get(i).getPhoneType().equals(Constants.FEATURE_PHONE)) {
+                    clientList[i].setReceivedPhone(true);
+                    arrayCreatedPhones.remove(i);
+
+                    System.out.println("Client is calling a number...");
+                }
+            }
         }
     }
 }

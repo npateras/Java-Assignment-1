@@ -42,14 +42,14 @@ public class Shop implements Serializable {
     public Phone createRandomPhoneSpecifications(String phoneType) {
         if (Objects.equals(phoneType, Constants.SMART_PHONE)) {
             return PhoneFactory.getPhone(new SmartPhoneFactory(
-                    randomScreenSize(),
+                    phoneType, randomScreenSize(),
                     randomStorageSize(),
                     randomOS(),
                     randomCamera()));
         }
         else {
             return PhoneFactory.getPhone(new FeaturePhoneFactory(
-                    randomScreenSize(),
+                    phoneType, randomScreenSize(),
                     randomStorageSize()));
         }
     }

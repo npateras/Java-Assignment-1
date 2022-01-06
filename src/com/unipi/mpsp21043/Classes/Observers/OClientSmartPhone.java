@@ -1,6 +1,6 @@
 package com.unipi.mpsp21043.Classes.Observers;
 
-public class OClient implements INotifyFeaturePhone {
+public class OClientSmartPhone implements INotifySmartPhone {
 
     @Override
     public void sendMessage(String msg) {
