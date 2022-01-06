@@ -1,10 +1,10 @@
 package com.unipi.mpsp21043;
 
 import com.unipi.mpsp21043.Classes.Factories.Phone;
+import com.unipi.mpsp21043.Classes.Observers.Client;
 import com.unipi.mpsp21043.Classes.Observers.OClientFeaturePhone;
 import com.unipi.mpsp21043.Classes.Observers.OClientSmartPhone;
 import com.unipi.mpsp21043.Classes.Observers.OStaff;
-import com.unipi.mpsp21043.Classes.Observers.Client;
 import com.unipi.mpsp21043.Classes.Singletons.Shop;
 import com.unipi.mpsp21043.Utils.Constants;
 
@@ -88,7 +88,39 @@ public class Main {
             observableStaff.notifyFeaturePhoneUpdate();
 
         System.out.println("");
-        for (int i=0; i < arrayCreatedPhones.size(); i++) {
+        for (int i=0; i < clientList.length; i++) {
+            for (int j=0; j < arrayCreatedPhones.size(); j++) {
+                if (Objects.equals(clientList[i].getPhoneChoice(), Constants.SMART_PHONE)) {
+                    if (arrayCreatedPhones.get(j).getPhoneType().equals(Constants.SMART_PHONE)) {
+                        clientList[i].setReceivedPhone(true);
+                        arrayCreatedPhones.remove(j);
+
+                        System.out.println("Client is taking a picture...");
+                        break;
+                    }
+                }
+                else {
+                    if (arrayCreatedPhones.get(j).getPhoneType().equals(Constants.FEATURE_PHONE)) {
+                        clientList[i].setReceivedPhone(true);
+                        arrayCreatedPhones.remove(j);
+
+                        System.out.println("Client is calling a number...");
+                        break;
+                    }
+                }
+            }
+        }
+
+        System.out.println("");
+        int clientsWithoutPhone = 0;
+        for (Client client : clientList) {
+            if (!client.isReceivedPhone())
+                clientsWithoutPhone++;
+        }
+
+        System.out.println("Clients without phone: " + clientsWithoutPhone);
+
+        /*for (int i=0; i < arrayCreatedPhones.size(); i++) {
             if (Objects.equals(clientList[i].getPhoneChoice(), Constants.SMART_PHONE)) {
                 if (arrayCreatedPhones.get(i).getPhoneType().equals(Constants.SMART_PHONE)) {
                     clientList[i].setReceivedPhone(true);
@@ -105,6 +137,6 @@ public class Main {
                     System.out.println("Client is calling a number...");
                 }
             }
-        }
+        }*/
     }
 }

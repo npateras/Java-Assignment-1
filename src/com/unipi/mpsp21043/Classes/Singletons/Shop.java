@@ -7,36 +7,17 @@ import com.unipi.mpsp21043.Classes.Factories.PhoneFactory;
 import com.unipi.mpsp21043.Classes.Factories.SmartPhoneFactory;
 import com.unipi.mpsp21043.Utils.Constants;
 
-import java.io.Serializable;
 import java.util.Objects;
 import java.util.Random;
 
-public class Shop implements Serializable {
+public class Shop {
 
-    private static volatile Shop sSoleInstance;
-
-    //private constructor.
-    private Shop(){
-
-        //Prevent form the reflection api.
-        if (sSoleInstance != null){
-            throw new RuntimeException("Use getInstance() method to get the single instance of this class.");
-        }
+    private Shop(){}
+    private static class SingletonHolder{
+        static final Shop shop = new Shop();
     }
-
-    public static Shop getInstance() {
-        if (sSoleInstance == null) { //if there is no instance available... create new one
-            synchronized (Shop.class) {
-                if (sSoleInstance == null) sSoleInstance = new Shop();
-            }
-        }
-
-        return sSoleInstance;
-    }
-
-    //Make singleton from serialize and deserialize operation.
-    protected Shop readResolve() {
-        return getInstance();
+    public static Shop getInstance(){
+        return SingletonHolder.shop;
     }
 
     public Phone createRandomPhoneSpecifications(String phoneType) {

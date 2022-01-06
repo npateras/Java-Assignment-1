@@ -11,7 +11,6 @@ public class FeaturePhones extends Phone {
         this.storage = storage;
     }
 
-
     @Override
     public String getPhoneType() {
         return phoneType;
