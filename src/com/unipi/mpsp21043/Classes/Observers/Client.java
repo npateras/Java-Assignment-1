@@ -1,6 +1,6 @@
-package com.unipi.mpsp21043;
+package com.unipi.mpsp21043.Classes.Observers;
 
-public class Client {
+public class Client implements INotifyFeaturePhone {
     private String id;
     private String phoneChoice;
 
@@ -33,5 +33,10 @@ public class Client {
 
     public void setPhoneChoice(String phoneChoice) {
         this.phoneChoice = phoneChoice;
+    }
+
+    @Override
+    public void sendMessage(String phoneType) {
+        System.out.println("A new " + phoneType + " is available!");
     }
 }

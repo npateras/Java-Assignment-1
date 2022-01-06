@@ -1,5 +1,21 @@
 package com.unipi.mpsp21043;
 
+import com.unipi.mpsp21043.Classes.Factories.FeaturePhoneFactory;
+import com.unipi.mpsp21043.Classes.Factories.Phone;
+import com.unipi.mpsp21043.Classes.Factories.PhoneFactory;
+import com.unipi.mpsp21043.Classes.Factories.SmartPhoneFactory;
+import com.unipi.mpsp21043.Classes.Observers.OClient;
+import com.unipi.mpsp21043.Classes.Observers.OStaff;
+import com.unipi.mpsp21043.Classes.Observers.Client;
+import com.unipi.mpsp21043.Classes.Singletons.Shop;
+import com.unipi.mpsp21043.Utils.Constants;
+import static org.junit.Assert.*;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -24,6 +40,7 @@ public class Main {
         System.out.println("Enter the number of clients: ");
 
         int numOfClients = inputScan.nextInt();
+
         // If the num input is below 1, prompt for another value
         while((numOfClients < 1))
         {
@@ -35,29 +52,33 @@ public class Main {
         inputScan.close();
 
 
-        // DEBUG
-        System.out.print(numOfPhones + " " + numOfClients);
-
-        Phone featurePhone1 =
-                PhoneFactory.getPhone(new FeaturePhoneFactory(3,5,"345678"));
-        Phone smartPhone1 =
-                PhoneFactory.getPhone(new SmartPhoneFactory(6,50,"3456","Android"));
-
-        System.out.println(featurePhone1);
-        System.out.println(smartPhone1);
-
         Client[] arrayClients;
 
         arrayClients = new Client[numOfClients];
 
+        // OBSERVANT
+        OStaff observableStaff = new OStaff();
+
+        // For each client
         for (int i = 0; i < numOfClients; i++) {
-            arrayClients[0] = new Client(
+            String phoneChoice = Constants.phoneChoicesListRandomElement();
+
+            OClient observerClient = new OClient();
+
+            observableStaff.addObserver(observerClient);
+
+            arrayClients[i] = new Client(
                     UUID.randomUUID().toString(),
-                    Constants.phoneChoicesList_randomElement());
+                    phoneChoice);
         }
 
-        for (Client element: arrayClients) {
-            System.out.println(element);
+        Shop shopInstance = Shop.getInstance();
+
+        Random rand = new Random();
+        for (int i = 0; i < numOfClients; i++) {
+            String phoneToBeCreated = Constants.phoneChoicesListRandomElement();
+            Phone phone = shopInstance.createRandomPhoneSpecifications(phoneToBeCreated);
+            observableStaff.notifyUpdate(phoneToBeCreated);
         }
     }
 }
